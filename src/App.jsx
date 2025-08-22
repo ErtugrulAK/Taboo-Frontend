@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import WordCard from "./components/WordCard";
+import GameInfo from "./components/GameInfo";
+import GameControls from "./components/GameControls";
 import "./App.css";
 
 function App() {
@@ -75,23 +77,13 @@ function App() {
         </button>
       ) : (
         <>
-          <div className="timer">Time left: {timeLeft} s</div>
-          <div className="passes">Passes left: {passCount}</div>
+          <GameInfo timeLeft={timeLeft} passCount={passCount} />
           {currentWord ? (
             <WordCard word={currentWord.word} taboo={currentWord.taboo} />
           ) : (
             <p>Loading...</p>
           )}
-          <div className="buttons">
-            <button onClick={getNextWord}>Next ▶</button>
-            <button
-              onClick={handlePass}
-              disabled={passCount === 0}
-              className={`pass-button ${passCount === 0 ? "disabled" : ""}`}
-            >
-              Pass
-            </button>
-          </div>
+          <GameControls onNext={getNextWord} onPass={handlePass} passCount={passCount} />
           <div className="chatbox">
             <div className="messages">
               {messages.length === 0 ? (
