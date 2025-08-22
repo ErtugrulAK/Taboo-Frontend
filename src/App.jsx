@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import WordCard from "./components/WordCard";
 import GameInfo from "./components/GameInfo";
 import GameControls from "./components/GameControls";
+import ChatBox from "./components/ChatBox";
 import "./App.css";
 
 function App() {
@@ -79,34 +80,17 @@ function App() {
         <>
           <GameInfo timeLeft={timeLeft} passCount={passCount} />
           {currentWord ? (
-            <WordCard word={currentWord.word} taboo={currentWord.taboo} />
+            <WordCard word={currentWord.word} taboo={currentWord.word.taboo} />
           ) : (
             <p>Loading...</p>
           )}
           <GameControls onNext={getNextWord} onPass={handlePass} passCount={passCount} />
-          <div className="chatbox">
-            <div className="messages">
-              {messages.length === 0 ? (
-                <p className="no-messages">No messages yet.</p>
-              ) : (
-                messages.map((msg, index) => (
-                  <div key={index} className="message">
-                    {msg}
-                  </div>
-                ))
-              )}
-            </div>
-            <div className="chat-input">
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-                placeholder="Type your message..."
-              />
-              <button onClick={handleSendMessage}>Send</button>
-            </div>
-          </div>
+          <ChatBox
+            messages={messages}
+            input={input}
+            onInputChange={(e) => setInput(e.target.value)}
+            onSendMessage={handleSendMessage}
+          />
         </>
       )}
     </div>
