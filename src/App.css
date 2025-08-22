@@ -1,0 +1,146 @@
+body {
+  background-color: #1a1a2e;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  color: #e0e0e0;
+}
+
+.app {
+  text-align: center;
+  padding: 2.5rem;
+}
+
+.card {
+  background-color: #2e2e3e;
+  color: #f0f0f0;
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 340px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.main-word {
+  background-color: #ff6f61;
+  color: white;
+  font-size: 1.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.taboo-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.taboo-list li {
+  margin: 0.5rem 0;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #ffffff;
+  text-shadow: none;
+}
+
+.buttons {
+  margin-top: 1.5rem;
+}
+
+button {
+  margin: 0 0.7rem;
+  padding: 0.6rem 1.3rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  background-color: #ff6f61;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(255, 111, 97, 0.5);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+  background-color: #e85c4d;
+  box-shadow: 0 6px 10px rgba(232, 92, 77, 0.7);
+}
+
+.pass-button.disabled {
+  background-color: #999;
+  cursor: not-allowed;
+}
+
+.chatbox {
+  margin-top: 2rem;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #2e2e3e;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.messages {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 0.8rem;
+  text-align: left;
+}
+
+.message {
+  background-color: #3a3a4e;
+  padding: 0.5rem 0.8rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  word-break: break-word;
+}
+
+.no-messages {
+  color: #bbb;
+  font-style: italic;
+  text-align: center;
+}
+
+.chat-input {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  border: none;
+  font-size: 1rem;
+  background-color: #1f1f2f;
+  color: #fff;
+}
+
+.chat-input input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #ff6f61;
+}
+
+.chat-input button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: none;
+  background-color: #ff6f61;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.chat-input button:hover {
+  background-color: #e85c4d;
+}
