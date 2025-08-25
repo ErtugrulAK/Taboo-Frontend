@@ -5,6 +5,23 @@ body {
   color: #e0e0e0;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
 .app {
   text-align: center;
   padding: 2.5rem;
@@ -26,6 +43,11 @@ body {
   color: #4dffaf;
 }
 
+.timer.timer-warning {
+  color: #dc3545;
+  animation: pulse 1.2s infinite ease-in-out;
+}
+
 .card {
   background-color: #2e2e3e;
   color: #f0f0f0;
@@ -34,11 +56,7 @@ body {
   border-radius: 12px;
   width: 340px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-  transition: transform 0.2s ease;
-}
-
-.card:hover {
-  transform: translateY(-5px);
+  animation: fadeIn 0.5s ease-out;
 }
 
 .main-word {
@@ -88,13 +106,13 @@ button {
   background-color: #ff6f61;
   color: white;
   font-weight: 600;
-  box-shadow: 0 4px 6px rgba(255, 111, 97, 0.5);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
   transition: all 0.2s ease;
 }
 
 button:hover {
   background-color: #e85c4d;
-  box-shadow: 0 6px 10px rgba(232, 92, 77, 0.7);
+  box-shadow: 0 6px 10px rgba(0,0,0,0.3);
   transform: translateY(-2px);
 }
 
@@ -107,6 +125,8 @@ button:hover {
 .pass-button.disabled {
   background-color: #999;
   cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 
 .ai-guess-box {
@@ -116,6 +136,7 @@ button:hover {
   margin: 1.5rem auto;
   max-width: 400px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  animation: fadeIn 0.5s ease-out;
 }
 
 .ai-guess-text {
@@ -176,6 +197,7 @@ button:hover {
   margin-bottom: 0.5rem;
   word-break: break-word;
   max-width: 80%;
+  animation: fadeIn 0.4s ease-out;
 }
 
 .message.user {
@@ -246,6 +268,7 @@ button:hover {
   padding: 3rem;
   border-radius: 15px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  animation: fadeIn 0.5s ease-out;
 }
 
 .final-score {
