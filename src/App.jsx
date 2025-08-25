@@ -2,23 +2,22 @@ import React, { useEffect, useState, useRef } from "react";
 import WordCard from "./components/WordCard";
 import GameInfo from "./components/GameInfo";
 import GameControls from "./components/GameControls";
-import AIGuess from "./components/AIGuess";
 import ChatBox from "./components/ChatBox";
+import AIGuess from "./components/AIGuess";
 import GameOver from "./components/GameOver";
 import "./App.css";
 
 function App() {
-  const [gameState, setGameState] = useState('notStarted');
   const [currentWord, setCurrentWord] = useState(null);
   const [timeLeft, setTimeLeft] = useState(60);
   const [passCount, setPassCount] = useState(3);
-  const [score, setScore] = useState(0);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const [usedWords, setUsedWords] = useState([]);
   const [aiGuess, setAiGuess] = useState("");
   const [combinedDescription, setCombinedDescription] = useState("");
-  const [usedWords, setUsedWords] = useState([]);
-  const [highlightedTaboos, setHighlightedTaboos] = useState([]);
+  const [score, setScore] = useState(0);
+  const [gameState, setGameState] = useState('notStarted');
   const timerRef = useRef(null);
 
   const API_URL = "http://127.0.0.1:8000";
@@ -42,9 +41,6 @@ function App() {
         } else {
           setCurrentWord(data);
           setUsedWords(prevUsed => [...prevUsed, data.word]);
-          setMessages([]);
-          setAiGuess("");
-          setCombinedDescription("");
         }
       })
       .catch((error) => {
@@ -54,26 +50,11 @@ function App() {
       });
   };
 
-  const startGame = () => {
-    const initialUsedWords = [];
-    setUsedWords(initialUsedWords);
-    setTimeLeft(60);
-    setPassCount(3);
-    setScore(0);
-    setGameState('playing');
-    fetchWord(initialUsedWords);
-  };
-
-  const handleRestart = () => {
-    setGameState('notStarted');
-  };
-
   useEffect(() => {
     if (gameState !== 'playing') return;
-
     timerRef.current = setInterval(() => {
       setTimeLeft((time) => {
-        if (time <= 1) {
+        if (time === 1) {
           clearInterval(timerRef.current);
           setGameState('gameOver');
           return 0;
@@ -84,15 +65,41 @@ function App() {
     return () => clearInterval(timerRef.current);
   }, [gameState]);
 
+  const startGame = () => {
+    const initialUsedWords = [];
+    setUsedWords(initialUsedWords);
+    setTimeLeft(60);
+    setPassCount(3);
+    setMessages([]);
+    setInput("");
+    setAiGuess("");
+    setCombinedDescription("");
+    setScore(0);
+    setGameState('playing');
+    fetchWord(initialUsedWords);
+  };
+  
+  const handleRestart = () => {
+    setGameState('notStarted');
+  };
+
+  const getNextWord = () => {
+    setMessages([]);
+    setInput("");
+    setAiGuess("");
+    setCombinedDescription("");
+    fetchWord(usedWords);
+  };
+  
   const awardPointAndGetNextWord = () => {
     setScore(prevScore => prevScore + 1);
-    fetchWord(usedWords);
+    getNextWord();
   };
 
   const handlePass = () => {
     if (passCount > 0) {
       setPassCount(passCount - 1);
-      fetchWord(usedWords);
+      getNextWord();
     }
   };
 
@@ -118,17 +125,8 @@ function App() {
 
     if (!checkResult.isvalid) {
       setScore(prevScore => Math.max(0, prevScore - 1));
-      const usedTabooWords = checkResult.used_taboo_words;
-      setHighlightedTaboos(usedTabooWords);
-
-      const warningText = `Taboo word used: ${usedTabooWords.join(", ")}`;
+      const warningText = `Warning! Taboo word used: ${checkResult.used_taboo_words.join(", ")}`;
       setMessages((prev) => [...prev, { sender: "system", text: warningText }]);
-      
-      setTimeout(() => {
-        setHighlightedTaboos([]);
-        fetchWord(usedWords);
-      }, 1500);
-
       return;
     }
 
@@ -160,22 +158,13 @@ function App() {
       return (
         <>
           <GameInfo timeLeft={timeLeft} passCount={passCount} score={score} />
-
           {currentWord ? (
-            <WordCard 
-              key={currentWord.word}
-              word={currentWord.word} 
-              taboo={currentWord.taboo} 
-              highlightedTaboos={highlightedTaboos}
-            />
+            <WordCard word={currentWord.word} taboo={currentWord.taboo} />
           ) : (
-            <p>Loading word...</p>
+            <p>Loading...</p>
           )}
-
           <GameControls onPass={handlePass} passCount={passCount} />
-
           <AIGuess guess={aiGuess} onFeedback={handleGuessFeedback} />
-
           <ChatBox
             messages={messages}
             input={input}
@@ -185,17 +174,17 @@ function App() {
         </>
       );
     }
-
+    
     return (
       <button className="start-button" onClick={startGame}>
-        Start Game
+        Start
       </button>
     );
   };
 
   return (
     <div className="app">
-      <h1>AI Taboo Game</h1>
+      <h1>Play Taboo</h1>
       {renderGameContent()}
     </div>
   );
