@@ -14,6 +14,8 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [usedWords, setUsedWords] = useState([]);
+  const [aiGuess, setAiGuess] = useState("");
+  const [combinedDescription, setCombinedDescription] = useState("");
   const timerRef = useRef(null);
 
   const API_URL = "http://127.0.0.1:8000";
@@ -38,7 +40,6 @@ function App() {
 
   useEffect(() => {
     if (!isStarted) return;
-
     timerRef.current = setInterval(() => {
       setTimeLeft((time) => {
         if (time === 1) {
@@ -50,7 +51,6 @@ function App() {
         return time - 1;
       });
     }, 1000);
-
     return () => clearInterval(timerRef.current);
   }, [isStarted]);
 
@@ -61,11 +61,17 @@ function App() {
     setPassCount(3);
     setMessages([]);
     setInput("");
+    setAiGuess("");
+    setCombinedDescription("");
     setIsStarted(true);
     fetchWord(initialUsedWords);
   };
 
   const getNextWord = () => {
+    setMessages([]);
+    setInput("");
+    setAiGuess("");
+    setCombinedDescription("");
     fetchWord(usedWords);
   };
 
@@ -76,10 +82,40 @@ function App() {
     }
   };
 
-  const handleSendMessage = () => {
-    if (input.trim() === "") return;
-    setMessages((prev) => [...prev, input]);
+  const handleSendMessage = async () => {
+    if (input.trim() === "" || !currentWord) return;
+
+    const userMessage = input;
+    const newCombinedDescription = combinedDescription ? `${combinedDescription} ${userMessage}` : userMessage;
+
+    setMessages((prev) => [...prev, { sender: "user", text: userMessage }]);
     setInput("");
+    setCombinedDescription(newCombinedDescription);
+
+    const checkResponse = await fetch(`${API_URL}/api/check-description`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        target_word: currentWord.word,
+        description: userMessage,
+      }),
+    });
+    const checkResult = await checkResponse.json();
+
+    if (!checkResult.isvalid) {
+      const warningText = `Warning! Taboo word used: ${checkResult.used_taboo_words.join(", ")}`;
+      setMessages((prev) => [...prev, { sender: "system", text: warningText }]);
+      return;
+    }
+
+    const guessResponse = await fetch(`${API_URL}/api/guess-word`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ description: newCombinedDescription }),
+    });
+    const guessResult = await guessResponse.json();
+    setAiGuess(guessResult.guess);
+    setMessages((prev) => [...prev, { sender: "ai", text: `AI Guess: ${guessResult.guess}` }]);
   };
 
   return (

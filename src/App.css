@@ -94,14 +94,37 @@ button:hover {
   overflow-y: auto;
   margin-bottom: 0.8rem;
   text-align: left;
+  display: flex;
+  flex-direction: column;
 }
 
 .message {
-  background-color: #3a3a4e;
   padding: 0.5rem 0.8rem;
   border-radius: 8px;
   margin-bottom: 0.5rem;
   word-break: break-word;
+  max-width: 80%;
+}
+
+.message.user {
+    background-color: #ff6f61;
+    color: white;
+    align-self: flex-end;
+}
+
+.message.ai {
+    background-color: #3f3f5a;
+    color: #e0e0e0;
+    align-self: flex-start;
+}
+
+.message.system {
+    background-color: #6c757d;
+    color: white;
+    font-style: italic;
+    text-align: center;
+    align-self: center;
+    max-width: 100%;
 }
 
 .no-messages {

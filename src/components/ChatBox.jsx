@@ -14,8 +14,8 @@ function ChatBox({ messages, input, onInputChange, onSendMessage }) {
           <p className="no-messages">No messages yet.</p>
         ) : (
           messages.map((msg, index) => (
-            <div key={index} className="message">
-              {msg}
+            <div key={index} className={`message ${msg.sender}`}>
+              {msg.text}
             </div>
           ))
         )}
