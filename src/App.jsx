@@ -115,7 +115,16 @@ function App() {
     });
     const guessResult = await guessResponse.json();
     setAiGuess(guessResult.guess);
-    setMessages((prev) => [...prev, { sender: "ai", text: `AI Guess: ${guessResult.guess}` }]);
+  };
+
+  const handleGuessFeedback = (isCorrect) => {
+    if (isCorrect) {
+      setMessages((prev) => [...prev, { sender: "system", text: `Correct! The word was ${currentWord.word}.` }]);
+      getNextWord();
+    } else {
+      setMessages((prev) => [...prev, { sender: "system", text: "Incorrect guess. Add more description." }]);
+      setAiGuess("");
+    }
   };
 
   return (
@@ -134,7 +143,7 @@ function App() {
             <p>Loading...</p>
           )}
           <GameControls onNext={getNextWord} onPass={handlePass} passCount={passCount} />
-          <AIGuess />
+          <AIGuess guess={aiGuess} onFeedback={handleGuessFeedback} />
           <ChatBox
             messages={messages}
             input={input}

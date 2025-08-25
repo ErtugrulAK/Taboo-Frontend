@@ -65,17 +65,59 @@ button {
   color: white;
   font-weight: 600;
   box-shadow: 0 4px 6px rgba(255, 111, 97, 0.5);
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 button:hover {
   background-color: #e85c4d;
   box-shadow: 0 6px 10px rgba(232, 92, 77, 0.7);
+  transform: translateY(-2px);
 }
 
 .pass-button.disabled {
   background-color: #999;
   cursor: not-allowed;
+}
+
+.ai-guess-box {
+  background-color: #3f3f5a;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  margin: 1.5rem auto;
+  max-width: 400px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.ai-guess-text {
+  font-size: 1.2rem;
+  margin: 0;
+  margin-bottom: 1rem;
+  color: #e0e0e0;
+}
+
+.ai-guess-text strong {
+    color: #4dffaf;
+}
+
+.feedback-buttons button {
+    font-size: 1rem;
+    padding: 0.5rem 1.5rem;
+}
+
+.true-button {
+    background-color: #28a745;
+}
+
+.true-button:hover {
+    background-color: #218838;
+}
+
+.false-button {
+    background-color: #dc3545;
+}
+
+.false-button:hover {
+    background-color: #c82333;
 }
 
 .chatbox {
