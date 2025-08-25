@@ -18,6 +18,7 @@ function App() {
   const [combinedDescription, setCombinedDescription] = useState("");
   const [score, setScore] = useState(0);
   const [gameState, setGameState] = useState('notStarted');
+  const [highlightedTaboos, setHighlightedTaboos] = useState([]);
   const timerRef = useRef(null);
 
   const API_URL = "http://127.0.0.1:8000";
@@ -125,8 +126,17 @@ function App() {
 
     if (!checkResult.isvalid) {
       setScore(prevScore => Math.max(0, prevScore - 1));
-      const warningText = `Warning! Taboo word used: ${checkResult.used_taboo_words.join(", ")}`;
+      const usedTabooWords = checkResult.used_taboo_words;
+      setHighlightedTaboos(usedTabooWords);
+
+      const warningText = `Warning! Taboo word used: ${usedTabooWords.join(", ")}`;
       setMessages((prev) => [...prev, { sender: "system", text: warningText }]);
+      
+      setTimeout(() => {
+        setHighlightedTaboos([]);
+        getNextWord();
+      }, 1500);
+
       return;
     }
 
@@ -159,7 +169,11 @@ function App() {
         <>
           <GameInfo timeLeft={timeLeft} passCount={passCount} score={score} />
           {currentWord ? (
-            <WordCard word={currentWord.word} taboo={currentWord.taboo} />
+            <WordCard 
+              word={currentWord.word} 
+              taboo={currentWord.taboo}
+              highlightedTaboos={highlightedTaboos}
+            />
           ) : (
             <p>Loading...</p>
           )}
