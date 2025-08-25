@@ -4,18 +4,20 @@ import GameInfo from "./components/GameInfo";
 import GameControls from "./components/GameControls";
 import ChatBox from "./components/ChatBox";
 import AIGuess from "./components/AIGuess";
+import GameOver from "./components/GameOver";
 import "./App.css";
 
 function App() {
   const [currentWord, setCurrentWord] = useState(null);
   const [timeLeft, setTimeLeft] = useState(60);
-  const [isStarted, setIsStarted] = useState(false);
   const [passCount, setPassCount] = useState(3);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [usedWords, setUsedWords] = useState([]);
   const [aiGuess, setAiGuess] = useState("");
   const [combinedDescription, setCombinedDescription] = useState("");
+  const [score, setScore] = useState(0);
+  const [gameState, setGameState] = useState('notStarted');
   const timerRef = useRef(null);
 
   const API_URL = "http://127.0.0.1:8000";
@@ -30,7 +32,7 @@ function App() {
       .then((data) => {
         if (data.error) {
           alert(data.error);
-          setIsStarted(false);
+          setGameState('gameOver');
         } else {
           setCurrentWord(data);
           setUsedWords(prevUsed => [...prevUsed, data.word]);
@@ -39,20 +41,19 @@ function App() {
   };
 
   useEffect(() => {
-    if (!isStarted) return;
+    if (gameState !== 'playing') return;
     timerRef.current = setInterval(() => {
       setTimeLeft((time) => {
         if (time === 1) {
           clearInterval(timerRef.current);
-          setIsStarted(false);
-          alert("Time is up!");
+          setGameState('gameOver');
           return 0;
         }
         return time - 1;
       });
     }, 1000);
     return () => clearInterval(timerRef.current);
-  }, [isStarted]);
+  }, [gameState]);
 
   const startGame = () => {
     const initialUsedWords = [];
@@ -63,8 +64,13 @@ function App() {
     setInput("");
     setAiGuess("");
     setCombinedDescription("");
-    setIsStarted(true);
+    setScore(0);
+    setGameState('playing');
     fetchWord(initialUsedWords);
+  };
+  
+  const handleRestart = () => {
+    setGameState('notStarted');
   };
 
   const getNextWord = () => {
@@ -73,6 +79,11 @@ function App() {
     setAiGuess("");
     setCombinedDescription("");
     fetchWord(usedWords);
+  };
+  
+  const awardPointAndGetNextWord = () => {
+    setScore(prevScore => prevScore + 1);
+    getNextWord();
   };
 
   const handlePass = () => {
@@ -103,6 +114,7 @@ function App() {
     const checkResult = await checkResponse.json();
 
     if (!checkResult.isvalid) {
+      setScore(prevScore => Math.max(0, prevScore - 1));
       const warningText = `Warning! Taboo word used: ${checkResult.used_taboo_words.join(", ")}`;
       setMessages((prev) => [...prev, { sender: "system", text: warningText }]);
       return;
@@ -120,29 +132,28 @@ function App() {
   const handleGuessFeedback = (isCorrect) => {
     if (isCorrect) {
       setMessages((prev) => [...prev, { sender: "system", text: `Correct! The word was ${currentWord.word}.` }]);
-      getNextWord();
+      awardPointAndGetNextWord();
     } else {
       setMessages((prev) => [...prev, { sender: "system", text: "Incorrect guess. Add more description." }]);
       setAiGuess("");
     }
   };
 
-  return (
-    <div className="app">
-      <h1>Play Taboo</h1>
-      {!isStarted ? (
-        <button className="start-button" onClick={startGame}>
-          Start
-        </button>
-      ) : (
+  const renderGameContent = () => {
+    if (gameState === 'gameOver') {
+      return <GameOver score={score} onRestart={handleRestart} />;
+    }
+
+    if (gameState === 'playing') {
+      return (
         <>
-          <GameInfo timeLeft={timeLeft} passCount={passCount} />
+          <GameInfo timeLeft={timeLeft} passCount={passCount} score={score} />
           {currentWord ? (
             <WordCard word={currentWord.word} taboo={currentWord.taboo} />
           ) : (
             <p>Loading...</p>
           )}
-          <GameControls onNext={getNextWord} onPass={handlePass} passCount={passCount} />
+          <GameControls onNext={awardPointAndGetNextWord} onPass={handlePass} passCount={passCount} />
           <AIGuess guess={aiGuess} onFeedback={handleGuessFeedback} />
           <ChatBox
             messages={messages}
@@ -151,7 +162,20 @@ function App() {
             onSendMessage={handleSendMessage}
           />
         </>
-      )}
+      );
+    }
+    
+    return (
+      <button className="start-button" onClick={startGame}>
+        Start
+      </button>
+    );
+  };
+
+  return (
+    <div className="app">
+      <h1>Play Taboo</h1>
+      {renderGameContent()}
     </div>
   );
 }

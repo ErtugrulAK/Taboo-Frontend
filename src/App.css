@@ -10,6 +10,22 @@ body {
   padding: 2.5rem;
 }
 
+.game-info {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  background-color: #2e2e3e;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+.score {
+  color: #4dffaf;
+}
+
 .card {
   background-color: #2e2e3e;
   color: #f0f0f0;
@@ -72,6 +88,12 @@ button:hover {
   background-color: #e85c4d;
   box-shadow: 0 6px 10px rgba(232, 92, 77, 0.7);
   transform: translateY(-2px);
+}
+
+.start-button, .restart-button {
+  padding: 1rem 2rem;
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
 .pass-button.disabled {
@@ -208,4 +230,19 @@ button:hover {
 
 .chat-input button:hover {
   background-color: #e85c4d;
+}
+
+.game-over-container {
+  margin-top: 4rem;
+  background-color: #2e2e3e;
+  padding: 3rem;
+  border-radius: 15px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.final-score {
+  font-size: 2.5rem;
+  color: #4dffaf;
+  font-weight: 700;
+  margin: 1rem 0 2rem 0;
 }
