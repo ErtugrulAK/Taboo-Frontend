@@ -1,9 +1,11 @@
 import React from 'react';
 
-function WordCard({ word, taboo, highlightedTaboos = [] }) {
+function WordCard({ word, taboo, highlightedTaboos = [], isMainWordHighlighted = false }) {
   return (
     <div className="card">
-      <div className="main-word">{word.toUpperCase()}</div>
+      <div className={`main-word ${isMainWordHighlighted ? 'main-word-highlight' : ''}`}>
+        {word.toUpperCase()}
+      </div>
       <ul className="taboo-list">
         {taboo.map((item, index) => (
           <li 
